@@ -8,10 +8,10 @@ from waitress import serve
 
 app = Flask(__name__)
 def get_summary(url):
+    print("URL="+url)
     if "www.youtube.com/watch" not in url:
         return "This is not a youtube page"
     transcript=YoutubeLoader.from_youtube_url(url, language=["en"], translation="en").load()
-    print(transcript)
     chunks=RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=0).split_documents(transcript)
     llm=ChatGoogleGenerativeAI(model="gemini-pro",convert_system_message_to_human=True)
     chain=load_summarize_chain(chain_type="stuff", llm=llm, verbose=True)
