@@ -1,5 +1,5 @@
 Flask
-youtube_transcript_api
+youtube-transcript-api
 langchain
 langchain_google_genai
 grpcio
