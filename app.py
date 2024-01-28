@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from flask import Flask, request
 from urllib.parse import urlparse
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -27,4 +28,5 @@ def index():
     return {"text":res}
 
 if __name__ == '__main__':
+    load_dotenv()
     app.run(debug=True)
