@@ -1,0 +1,5 @@
+Flask
+youtube_transcript_api
+langchain
+langchain_google_genai
+grpcio
