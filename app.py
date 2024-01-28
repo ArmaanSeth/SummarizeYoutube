@@ -4,7 +4,7 @@ from langchain_community.document_loaders import YoutubeLoader
 from langchain_google_genai.chat_models import ChatGoogleGenerativeAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.summarize import load_summarize_chain
-from waitress import serve
+# from waitress import serve
 
 app = Flask(__name__)
 def get_summary(url):
@@ -25,4 +25,4 @@ def index():
 
 if __name__ == '__main__':
     load_dotenv()
-    serve(app, host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=5000, debug=True)
