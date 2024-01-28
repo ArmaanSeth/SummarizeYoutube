@@ -4,4 +4,4 @@ langchain
 langchain_google_genai
 grpcio
 python-dotenv
-gunicorn
+waitress

@@ -1,25 +1,21 @@
 from dotenv import load_dotenv
 from flask import Flask, request
-from urllib.parse import urlparse
-from youtube_transcript_api import YouTubeTranscriptApi
+from langchain_community.document_loaders import YoutubeLoader
 from langchain_google_genai.chat_models import ChatGoogleGenerativeAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.summarize import load_summarize_chain
-from langchain.docstore.document import Document
+from waitress import serve
 
 app = Flask(__name__)
 def get_summary(url):
     if "www.youtube.com/watch" not in url:
         return "This is not a youtube page"
-    vid=urlparse(url).query[2:]
-    transcript=YouTubeTranscriptApi.get_transcript(vid, languages=["en","hi"])
-    transcript=[t["text"] for t in transcript]
-    transcript=' '.join(transcript)
-    chunks=RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=0).split_text(transcript)
-    docs=[Document(page_content=t) for t in chunks]
+    transcript=YoutubeLoader.from_youtube_url(url, language=["en"], translation="en").load()
+    print(transcript)
+    chunks=RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=0).split_documents(transcript)
     llm=ChatGoogleGenerativeAI(model="gemini-pro",convert_system_message_to_human=True)
     chain=load_summarize_chain(chain_type="stuff", llm=llm, verbose=True)
-    return chain.run(docs)
+    return chain.run(chunks)
 
 @app.route('/')
 def index():
@@ -29,4 +25,4 @@ def index():
 
 if __name__ == '__main__':
     load_dotenv()
-    app.run(host='0.0.0.0')
+    serve(app, host="0.0.0.0", port=8080)
